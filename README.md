@@ -4,6 +4,10 @@ A Layer-1 blockchain built from scratch in Python: its own block format, peer-to
 
 Only runtime dependency: `cryptography` (Ed25519 signatures). Python 3.9 or newer, Windows, macOS or Linux.
 
+**Paper:** [`docs/NyxChain_IEEE_Paper.pdf`](docs/NyxChain_IEEE_Paper.pdf) (IEEE format, LaTeX source in `docs/paper_source/`) · **Literature survey:** [`docs/NyxChain_Literature_Survey.pdf`](docs/NyxChain_Literature_Survey.pdf) · **Evidence:** [`proof/PROOF_INDEX.md`](proof/PROOF_INDEX.md)
+
+**Team:** Aman Aggarwal (BL.EN.U4CSE23206), Harsh Vardan Singh (BL.EN.U4CSE23222), Mukkara Rithvik Reddy (BL.EN.U4CSE23264), Dept. of CSE, Amrita School of Computing, Bengaluru.
+
 ## Quick start
 
 ```bash
@@ -13,7 +17,7 @@ python scripts/demo.py           # 4 validators: payments, staking, crash + reco
 python scripts/attack_demo.py    # a Byzantine validator signs two blocks for one slot and is slashed (~40 s)
 python scripts/benchmark.py      # throughput, finality latency, crash-recovery time + charts (~2 min)
 python scripts/reputation_sim.py # 300-block simulation of the reputation rule and the cap + charts (~5 s)
-python -m pytest -q              # 29 unit tests
+python -m pytest -q              # 30 unit tests
 ```
 
 On Windows you can also double-click `run_demo.bat`.
