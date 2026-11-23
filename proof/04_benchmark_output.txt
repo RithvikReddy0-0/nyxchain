@@ -1,0 +1,21 @@
+NyxChain benchmark -- 2026-11-23 06:23 UTC -- 2 CPU cores, Python 3.13.18
+
+== Throughput: 1000 transfers from 20 accounts (20 accounts x 50) ====
+   signed 1000 transactions in 0.04s
+   submitted to 4 nodes in 0.28s
+   all 1000 included in 2 blocks; span 2.0s -> 509 tx/s; end-to-end 1.6s
+   largest block: 500 txs
+
+== Throughput: 4000 transfers from 80 accounts (80 accounts x 50) ====
+   signed 4000 transactions in 0.24s
+   submitted to 4 nodes in 1.52s
+   all 4000 included in 9 blocks; span 9.0s -> 446 tx/s; end-to-end 8.9s
+   largest block: 500 txs
+
+== Crash recovery: kill node2 for 15 s, then restart it ==============
+   13 blocks produced while node2 was down; node2 back in sync 0.71s after restart
+
+== Finality latency (block production -> finalized, whole run incl. crash) 
+   50 blocks: median 1.0s, p90 1.03s, max 2.0s
+
+results written to /srv/proof/benchmark/

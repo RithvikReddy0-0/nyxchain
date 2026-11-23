@@ -1,0 +1,53 @@
+05:57:21 [node4 h=0 f=0] START   validator nyx2f668274b9e7b289d1f5b334b6c941515a7d2abe (BYZANTINE attack mode) | p2p 127.0.0.1:7104 | dashboard http://127.0.0.1:8104/
+05:57:21 [node4 h=0 f=0] PEER    connected to 127.0.0.1:7101
+05:57:23 [node4 h=0 f=0] PEER    connected to 127.0.0.1:7102
+05:57:23 [node4 h=0 f=0] PEER    connected to 127.0.0.1:7103
+05:57:26 [node4 h=1 f=0] BLOCK   #1 slot 1 by nyx39eeba.. txs=0 votes=0 2783a55c97
+05:57:27 [node4 h=2 f=1] BLOCK   #2 slot 2 by nyxe3aeb2.. txs=0 votes=4 7d5f881966
+05:57:27 [node4 h=2 f=1] FINAL   block #1 finalized (2783a55c97)
+05:57:28 [node4 h=3 f=2] BLOCK   #3 slot 3 by ME txs=0 votes=4 574ec20c85
+05:57:28 [node4 h=3 f=2] FINAL   block #2 finalized (7d5f881966)
+05:57:29 [node4 h=4 f=3] BLOCK   #4 slot 4 by nyx39eeba.. txs=0 votes=4 daa885d7b7
+05:57:29 [node4 h=4 f=3] FINAL   block #3 finalized (574ec20c85)
+05:57:30 [node4 h=5 f=4] BLOCK   #5 slot 5 by nyx0553db.. txs=0 votes=4 ddc1b2b5ae
+05:57:30 [node4 h=5 f=4] FINAL   block #4 finalized (daa885d7b7)
+05:57:31 [node4 h=6 f=5] BLOCK   #6 slot 6 by nyxe3aeb2.. txs=0 votes=4 33a35df34a
+05:57:31 [node4 h=6 f=5] FINAL   block #5 finalized (ddc1b2b5ae)
+05:57:32 [node4 h=6 f=5] ATTACK  signing two blocks for slot 7: 27bebb7469 -> ['127.0.0.1:7101'], 13652e3a7a -> the rest; voting for both
+05:57:32 [node4 h=7 f=6] BLOCK   #7 slot 7 by ME txs=0 votes=4 27bebb7469
+05:57:32 [node4 h=7 f=6] FINAL   block #6 finalized (33a35df34a)
+05:57:32 [node4 h=7 f=6] REORG   #7 slot 7 by ME txs=0 votes=4 13652e3a7a
+05:57:32 [node4 h=7 f=6] FINAL   block #6 finalized (33a35df34a)
+05:57:32 [node4 h=7 f=6] CAUGHT  nyx2f6682.. equivocated (double vote at height 7); evidence queued for slashing
+05:57:32 [node4 h=7 f=6] CAUGHT  nyx2f6682.. equivocated (two blocks in slot 7); evidence queued for slashing
+05:57:33 [node4 h=8 f=7] BLOCK   #8 slot 8 by ME txs=0 votes=2 24519bfc1f
+05:57:33 [node4 h=8 f=7] SLASHED nyx2f6682.. lost 250 NYX for double vote at height 7; removed from validator set
+05:57:33 [node4 h=8 f=7] FINAL   block #7 finalized (13652e3a7a)
+05:57:34 [node4 h=9 f=8] BLOCK   #9 slot 9 by nyxe3aeb2.. txs=0 votes=3 f99fcaa7df
+05:57:34 [node4 h=9 f=8] FINAL   block #8 finalized (24519bfc1f)
+05:57:35 [node4 h=10 f=9] BLOCK   #10 slot 10 by nyx39eeba.. txs=0 votes=3 9724ce6b54
+05:57:35 [node4 h=10 f=9] FINAL   block #9 finalized (f99fcaa7df)
+05:57:36 [node4 h=11 f=10] BLOCK   #11 slot 11 by nyxe3aeb2.. txs=0 votes=3 e3bdc6b9c0
+05:57:36 [node4 h=11 f=10] FINAL   block #10 finalized (9724ce6b54)
+05:57:37 [node4 h=12 f=11] BLOCK   #12 slot 12 by nyx0553db.. txs=0 votes=3 ce02118be3
+05:57:37 [node4 h=12 f=11] FINAL   block #11 finalized (e3bdc6b9c0)
+05:57:38 [node4 h=13 f=12] BLOCK   #13 slot 13 by nyx0553db.. txs=0 votes=3 56de360065
+05:57:38 [node4 h=13 f=12] FINAL   block #12 finalized (ce02118be3)
+05:57:39 [node4 h=14 f=13] BLOCK   #14 slot 14 by nyxe3aeb2.. txs=0 votes=3 615ddffba1
+05:57:39 [node4 h=14 f=13] FINAL   block #13 finalized (56de360065)
+05:57:40 [node4 h=15 f=14] BLOCK   #15 slot 15 by nyx0553db.. txs=0 votes=3 40e1766a2f
+05:57:40 [node4 h=15 f=14] FINAL   block #14 finalized (615ddffba1)
+05:57:41 [node4 h=16 f=15] BLOCK   #16 slot 16 by nyxe3aeb2.. txs=0 votes=3 9237069832
+05:57:41 [node4 h=16 f=15] FINAL   block #15 finalized (40e1766a2f)
+05:57:42 [node4 h=17 f=16] BLOCK   #17 slot 17 by nyxe3aeb2.. txs=0 votes=3 cb9beb1b6c
+05:57:42 [node4 h=17 f=16] FINAL   block #16 finalized (9237069832)
+05:57:43 [node4 h=18 f=17] BLOCK   #18 slot 18 by nyx0553db.. txs=0 votes=3 4b8a0f76e8
+05:57:43 [node4 h=18 f=17] FINAL   block #17 finalized (cb9beb1b6c)
+05:57:44 [node4 h=19 f=18] BLOCK   #19 slot 19 by nyxe3aeb2.. txs=0 votes=3 3ca1688170
+05:57:44 [node4 h=19 f=18] FINAL   block #18 finalized (4b8a0f76e8)
+05:57:45 [node4 h=20 f=19] BLOCK   #20 slot 20 by nyxe3aeb2.. txs=0 votes=3 62af8884a5
+05:57:45 [node4 h=20 f=19] FINAL   block #19 finalized (3ca1688170)
+05:57:46 [node4 h=21 f=20] BLOCK   #21 slot 21 by nyxe3aeb2.. txs=0 votes=3 bc82596a10
+05:57:46 [node4 h=21 f=20] FINAL   block #20 finalized (62af8884a5)
+05:57:47 [node4 h=22 f=21] BLOCK   #22 slot 22 by nyx0553db.. txs=0 votes=3 d9399c85bd
+05:57:47 [node4 h=22 f=21] FINAL   block #21 finalized (bc82596a10)

@@ -1,0 +1,22 @@
+NyxChain reputation simulation -- 2026-11-23 06:23 UTC
+simulated 300 blocks; final reputation:
+  Founder        100.0%   (at block 150: 96.5%)
+  Newcomer        99.8%   (at block 150: 93.0%)
+  Quitter          5.0%   (at block 150: 96.6%)
+  Flaky           56.1%   (at block 150: 53.6%)
+  Crash+return    96.5%   (at block 150: 46.0%)
+whale share of voting weight (uncapped -> capped):
+    4.8% ->   4.8%
+   25.9% ->  25.9%
+   39.4% ->  30.0%
+   48.7% ->  30.0%
+   69.2% ->  38.5%
+   78.9% ->  57.9%
+   84.0% ->  68.0%
+   87.1% ->  74.2%
+   89.2% ->  78.4%
+   90.7% ->  81.4%
+   91.8% ->  83.7%
+   92.7% ->  85.5%
+   93.4% ->  86.9%
+written to /srv/proof/reputation_sim/

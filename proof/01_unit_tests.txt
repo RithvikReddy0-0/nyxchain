@@ -1,0 +1,40 @@
+NyxChain unit tests -- 2026-11-23 06:23 UTC -- Python 3.13.18
+
+============================= test session starts ==============================
+platform linux -- Python 3.13.18, pytest-9.1.1, pluggy-1.6.0 -- /usr/local/bin/python3
+rootdir: /srv/nyxchain
+plugins: platformdirs-4.13.5, anyio-4.15.1
+collecting ... collected 30 items
+
+tests/test_core.py::test_signatures_and_addresses PASSED                 [  3%]
+tests/test_core.py::test_merkle_root_changes_with_order PASSED           [  6%]
+tests/test_core.py::test_transfer_and_nonce_replay PASSED                [ 10%]
+tests/test_core.py::test_insufficient_balance PASSED                     [ 13%]
+tests/test_core.py::test_new_staker_starts_with_low_reputation PASSED    [ 16%]
+tests/test_core.py::test_unstake_goes_through_unbonding PASSED           [ 20%]
+tests/test_core.py::test_supply_is_conserved PASSED                      [ 23%]
+tests/test_core.py::test_valid_block_is_accepted_and_rewarded PASSED     [ 26%]
+tests/test_core.py::test_wrong_proposer_rejected PASSED                  [ 30%]
+tests/test_core.py::test_tampered_block_rejected PASSED                  [ 33%]
+tests/test_core.py::test_future_block_rejected PASSED                    [ 36%]
+tests/test_core.py::test_missed_slot_penalises_absent_proposer PASSED    [ 40%]
+tests/test_core.py::test_dead_validator_loses_influence PASSED           [ 43%]
+tests/test_core.py::test_reputation_is_a_moving_average PASSED           [ 46%]
+tests/test_core.py::test_equal_work_gives_equal_reputation PASSED        [ 50%]
+tests/test_core.py::test_old_work_fades PASSED                           [ 53%]
+tests/test_core.py::test_vote_deadline PASSED                            [ 56%]
+tests/test_core.py::test_cap_limits_a_whale_to_30_percent PASSED         [ 60%]
+tests/test_core.py::test_cap_handles_several_whales_and_small_sets PASSED [ 63%]
+tests/test_core.py::test_cap_never_more_than_doubles_anyone_else PASSED  [ 66%]
+tests/test_core.py::test_cap_applies_to_the_lottery_and_finality PASSED  [ 70%]
+tests/test_core.py::test_newcomer_not_charged_before_joining PASSED      [ 73%]
+tests/test_core.py::test_two_thirds_of_votes_finalize_a_block PASSED     [ 76%]
+tests/test_core.py::test_votes_are_checked PASSED                        [ 80%]
+tests/test_core.py::test_finalized_block_cannot_be_reverted PASSED       [ 83%]
+tests/test_core.py::test_fork_choice_prefers_more_finality PASSED        [ 86%]
+tests/test_core.py::test_double_vote_is_slashed PASSED                   [ 90%]
+tests/test_core.py::test_double_block_is_slashed PASSED                  [ 93%]
+tests/test_core.py::test_fake_evidence_rejected PASSED                   [ 96%]
+tests/test_core.py::test_mempool_orders_by_nonce_and_skips_bad PASSED    [100%]
+
+============================== 30 passed in 0.61s ==============================

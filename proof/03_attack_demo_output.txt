@@ -1,0 +1,49 @@
+NyxChain Byzantine attack demo -- 2026-11-23 05:57 UTC
+
+== 1. Start 3 honest validators and 1 Byzantine validator (node4) ====
+   node4 = nyx2f668274b9e7b289d1f5b334b6c941515a7d2abe  (attack mode)
+   node    height  final  tip          peers
+   node1        3      2  574ec20c85       3
+   node2        3      2  574ec20c85       3
+   node3        3      2  574ec20c85       3
+   node4        3      2  574ec20c85       3
+   validator        stake  reputation  weight
+   nyx0553db499       500         50%     250
+   nyx2f668274b       500         51%     253
+   nyx39eeba246       500         51%     253
+   nyxe3aeb2ea9       500         51%     253
+
+== 2. Wait for node4's turn: it signs two blocks for one slot ========
+   node4 log: signing two blocks for slot 7: 27bebb7469 -> ['127.0.0.1:7101'], 13652e3a7a -> the rest; voting for both
+   [PASS] node4 equivocated (two signed blocks for one slot, two votes)
+   node1 log: nyx2f6682.. equivocated (double vote at height 7); evidence queued for slashing
+   node2 log: nyx2f6682.. equivocated (double vote at height 7); evidence queued for slashing
+   node3 log: nyx2f6682.. equivocated (double vote at height 7); evidence queued for slashing
+   [PASS] honest nodes detected the equivocation  (detected by nodes [1, 2, 3])
+
+== 3. Evidence on chain: node4 is slashed ============================
+   validator        stake  reputation  weight
+   nyx0553db499       500         55%     272
+   nyx39eeba246       500         57%     285
+   nyxe3aeb2ea9       500         58%     288
+   nyx2f668274b       250     SLASHED       0
+   [PASS] node4 is slashed on chain  (at block #8)
+   [PASS] node4 lost half its stake  (500 -> 250 NYX)
+   [PASS] node4 was removed from the validator set
+   [PASS] slashed coins were burned (minus a 10% reward to the reporter)  (burned 225 NYX)
+   evidence in block #8: ['double_vote']
+   [PASS] the block carries the signed proof
+   (screenshot saved: 04_byzantine_slashed.png)
+
+== 4. Network after the attack =======================================
+   node    height  final  tip          peers
+   node1       22     21  d9399c85bd       3
+   node2       22     21  d9399c85bd       3
+   node3       22     21  d9399c85bd       3
+   node4       22     21  d9399c85bd       3
+   [PASS] honest chain and finality keep going  (finalized 11 -> 21)
+   [PASS] no conflicting finalized blocks: all nodes share block #21
+   kinds of equivocation detected across honest nodes: ['double vote', 'two blocks']
+
+== Summary ===========================================================
+   9/9 checks passed

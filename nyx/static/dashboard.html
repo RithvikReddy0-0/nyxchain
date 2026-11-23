@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NyxChain Explorer</title>
+<style>
+  :root {
+    --bg: #0b0d12; --panel: #12151c; --panel2: #171b24; --line: #232836;
+    --text: #e6e8ee; --muted: #8b92a5; --dim: #5d6476;
+    --accent: #8b7cf6; --accent2: #5eead4; --ok: #4ade80; --warn: #fbbf24; --bad: #f87171;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { display: flex; align-items: center; gap: 16px; padding: 16px 24px; border-bottom: 1px solid var(--line); background: linear-gradient(180deg, #11131b, var(--bg)); position: sticky; top: 0; z-index: 2; }
+  .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; letter-spacing: .3px; }
+  .logo .mark { width: 26px; height: 26px; border-radius: 7px; background: conic-gradient(from 210deg, var(--accent), var(--accent2), var(--accent)); box-shadow: 0 0 18px #8b7cf655; }
+  .pill { font: 12px var(--mono); color: var(--muted); border: 1px solid var(--line); padding: 3px 9px; border-radius: 99px; }
+  .grow { flex: 1; }
+  .slotbar { width: 160px; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+  .slotbar i { display: block; height: 100%; background: var(--accent); width: 0; transition: width .2s linear; }
+  main { padding: 20px 24px 40px; display: grid; gap: 18px; grid-template-columns: repeat(12, 1fr); max-width: 1500px; margin: 0 auto; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; min-width: 0; }
+  .card h2 { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; display: flex; align-items: center; gap: 8px; }
+  .kpis { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .kpi { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .kpi .v { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .kpi .l { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .kpi.final .v { color: var(--accent2); }
+  .net { grid-column: 1 / -1; }
+  .nodes { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+  .node { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; position: relative; }
+  .node.off { opacity: .55; border-style: dashed; }
+  .node .name { font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .off .dot { background: var(--bad); box-shadow: none; }
+  .node .row { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .node .row b { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+  .hashchip { font: 12px var(--mono); padding: 1px 6px; border-radius: 5px; color: #0b0d12; }
+  .vals { grid-column: span 7; }
+  .events { grid-column: span 5; }
+  .blocks { grid-column: span 7; }
+  .acct { grid-column: span 5; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-weight: 500; color: var(--dim); font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  td { padding: 7px 8px; border-bottom: 1px solid #1a1e29; font-variant-numeric: tabular-nums; }
+  tr:last-child td { border-bottom: 0; }
+  .mono { font-family: var(--mono); font-size: 12px; }
+  .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; min-width: 70px; }
+  .bar i { display: block; height: 100%; border-radius: 3px; transition: width .4s; }
+  .rep i { background: linear-gradient(90deg, var(--warn), var(--ok)); }
+  .share i { background: var(--accent); }
+  .tag { font-size: 11px; padding: 2px 7px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); }
+  .tag.final { color: var(--accent2); border-color: #5eead455; }
+  .tag.slashed { color: var(--bad); border-color: #f8717155; }
+  .tag.me { color: var(--accent); border-color: #8b7cf655; }
+  .feed { max-height: 420px; overflow: auto; font-size: 13px; }
+  .ev { display: grid; grid-template-columns: 64px 74px 1fr; gap: 8px; padding: 5px 0; border-bottom: 1px solid #1a1e29; }
+  .ev .t { color: var(--dim); font-family: var(--mono); font-size: 12px; }
+  .ev .k { font-family: var(--mono); font-size: 11px; font-weight: 700; }
+  .k.FINAL { color: var(--accent2); } .k.MISSED { color: var(--warn); } .k.SLASHED, .k.CAUGHT, .k.ATTACK, .k.REJECT { color: var(--bad); }
+  .k.BLOCK { color: var(--muted); } .k.REORG, .k.FORK { color: var(--accent); }
+  .blk { cursor: pointer; } .blk:hover td { background: #171b24; }
+  input { background: var(--panel2); border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 8px 10px; width: 100%; font: 12px var(--mono); }
+  pre { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 10px; overflow: auto; font: 12px/1.5 var(--mono); max-height: 360px; margin: 10px 0 0; white-space: pre-wrap; word-break: break-all; }
+  .empty { color: var(--dim); padding: 8px 0; }
+  .legend { color: var(--dim); font-size: 12px; margin-top: 10px; }
+  @media (max-width: 1000px) {
+    .kpis { grid-template-columns: repeat(3, 1fr); }
+    .vals, .events, .blocks, .acct { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><span class="mark"></span>NyxChain</div>
+  <span class="pill" id="chain">—</span>
+  <span class="pill" id="via">—</span>
+  <div class="grow"></div>
+  <span class="pill" id="slot">slot —</span>
+  <div class="slotbar"><i id="slotfill"></i></div>
+</header>
+
+<main>
+  <section class="kpis">
+    <div class="kpi"><div class="v" id="k-height">—</div><div class="l">Block height</div></div>
+    <div class="kpi final"><div class="v" id="k-final">—</div><div class="l">Finalized height</div></div>
+    <div class="kpi"><div class="v" id="k-lag">—</div><div class="l">Blocks awaiting finality</div></div>
+    <div class="kpi"><div class="v" id="k-vals">—</div><div class="l">Active validators</div></div>
+    <div class="kpi"><div class="v" id="k-supply">—</div><div class="l">Supply (NYX)</div></div>
+    <div class="kpi"><div class="v" id="k-burn">—</div><div class="l">Burned by slashing</div></div>
+  </section>
+
+  <section class="card net">
+    <h2>Network <span class="tag" id="agree">—</span></h2>
+    <div class="nodes" id="nodes"></div>
+    <div class="legend">Each node is queried directly. Matching coloured hashes mean the nodes agree on the same chain tip.</div>
+  </section>
+
+  <section class="card vals">
+    <h2>Validators · weight = stake × reputation, max 30% each</h2>
+    <table>
+      <thead><tr><th>Address</th><th>Stake</th><th title="Share of recent duties done on time (votes and proposals); older duties fade with a 50-block half-life">Reliability (reputation)</th><th>Voting share</th><th></th></tr></thead>
+      <tbody id="vals"></tbody>
+    </table>
+  </section>
+
+  <section class="card events">
+    <h2>Consensus events</h2>
+    <div class="feed" id="feed"><div class="empty">Waiting for events…</div></div>
+  </section>
+
+  <section class="card blocks">
+    <h2>Latest blocks</h2>
+    <table>
+      <thead><tr><th>#</th><th>Slot</th><th>Hash</th><th>Proposer</th><th>Txs</th><th>Votes</th><th></th></tr></thead>
+      <tbody id="blocks"></tbody>
+    </table>
+  </section>
+
+  <section class="card acct">
+    <h2>Look up</h2>
+    <input id="q" placeholder="Account address (nyx…) or block height, then Enter">
+    <pre id="out">Click a block or search an account.</pre>
+  </section>
+</main>
+
+<script>
+const self = location.origin.startsWith("http") ? location.origin : "http://127.0.0.1:8001";
+const known = new Set([self]);
+const names = {};
+let primary = self, lastStatus = null;
+
+const $ = id => document.getElementById(id);
+const short = (s, n = 10) => s ? s.slice(0, n) + "…" : "—";
+const color = h => `hsl(${parseInt(h.slice(0, 6), 16) % 360} 70% 68%)`;
+const chip = h => `<span class="hashchip" style="background:${color(h)}">${h.slice(0, 8)}</span>`;
+const esc = s => String(s).replace(/[&<>]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;"}[c]));
+
+async function get(base, path, ms = 900) {
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), ms);
+  try { const r = await fetch(base + path, {signal: ctl.signal}); return await r.json(); }
+  finally { clearTimeout(t); }
+}
+
+async function poll() {
+  const urls = [...known].sort();
+  const res = await Promise.all(urls.map(u => get(u, "/status").then(s => [u, s]).catch(() => [u, null])));
+  const live = res.filter(([, s]) => s);
+  live.forEach(([u, s]) => { names[u] = s.node_id; (s.peer_apis || []).forEach(a => known.add(a)); });
+  if (!live.length) { $("via").textContent = "no node reachable"; return; }
+  const mine = live.find(([u]) => u === primary) || live[0];
+  primary = mine[0]; lastStatus = mine[1];
+  renderStatus(lastStatus, res);
+  const [blocks, events] = await Promise.all([get(primary, "/blocks?limit=14&from=" + Math.max(0, lastStatus.height - 13)), get(primary, "/events")]);
+  renderBlocks(blocks); renderEvents(events);
+}
+
+function renderStatus(s, res) {
+  $("chain").textContent = s.chain_id;
+  $("via").textContent = "via " + s.node_id;
+  $("k-height").textContent = s.height;
+  $("k-final").textContent = s.finalized_height;
+  $("k-lag").textContent = s.height - s.finalized_height;
+  $("k-vals").textContent = s.validators.length;
+  $("k-supply").textContent = s.total_supply.toLocaleString();
+  $("k-burn").textContent = s.burned.toLocaleString();
+
+  const online = res.filter(([, x]) => x);
+  const tips = new Set(online.map(([, x]) => x.tip));
+  $("agree").textContent = `${online.length}/${res.length} online · ${tips.size === 1 ? "all agree" : tips.size + " different tips"}`;
+  $("agree").className = "tag " + (tips.size === 1 ? "final" : "");
+  $("nodes").innerHTML = res.map(([u, x]) => x ? `
+    <div class="node">
+      <div class="name"><span class="dot"></span>${esc(x.node_id)} ${u === primary ? '<span class="tag me">viewing</span>' : ""}</div>
+      <div class="row">height <b>${x.height}</b></div>
+      <div class="row">finalized <b>${x.finalized_height}</b></div>
+      <div class="row">tip ${chip(x.tip)}</div>
+      <div class="row">peers <b>${x.peers.length}</b> · mempool <b>${x.mempool}</b></div>
+    </div>` : `
+    <div class="node off">
+      <div class="name"><span class="dot"></span>${esc(names[u] || u.replace("http://", ""))}</div>
+      <div class="row">offline · ${esc(u.replace("http://", ""))}</div>
+    </div>`).join("");
+
+  const total = s.validators.reduce((a, v) => a + v.weight, 0) || 1;
+  const rows = s.validators.map(v => `
+    <tr>
+      <td class="mono">${short(v.address, 14)} ${v.address === s.validator ? '<span class="tag me">this node</span>' : ""}</td>
+      <td>${v.stake}</td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="bar rep" style="flex:1"><i style="width:${v.reputation_pct}%"></i></div><span>${v.reputation_pct.toFixed(0)}%</span></div></td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="bar share" style="flex:1"><i style="width:${(v.weight * 100 / total).toFixed(1)}%"></i></div><span>${(v.weight * 100 / total).toFixed(1)}%</span></div></td>
+      <td><span class="tag final">active</span>${v.capped ? ' <span class="tag" title="Raw weight ' + v.raw_weight + ' capped to ' + v.weight + '">capped</span>' : ""}</td>
+    </tr>`);
+  s.slashed.forEach(x => rows.push(`
+    <tr>
+      <td class="mono">${short(x.address, 14)}</td><td>${x.stake}</td>
+      <td><div class="bar rep"><i style="width:0"></i></div></td><td>0%</td>
+      <td><span class="tag slashed">slashed @#${x.height}</span></td>
+    </tr>`));
+  Object.entries(s.unbonding || {}).forEach(([a, list]) => list.forEach(([rel, amt]) => rows.push(`
+    <tr><td class="mono">${short(a, 14)}</td><td colspan="3" style="color:var(--muted)">${amt} NYX unbonding · released at block #${rel}</td><td><span class="tag">unbonding</span></td></tr>`)));
+  $("vals").innerHTML = rows.join("");
+}
+
+function renderBlocks(blocks) {
+  $("blocks").innerHTML = blocks.slice().reverse().map(b => `
+    <tr class="blk" data-h="${b.height}">
+      <td><b>${b.height}</b></td><td>${b.slot}</td><td>${chip(b.hash)}</td>
+      <td class="mono">${short(b.proposer_address, 12)}</td><td>${b.tx_count}</td><td>${b.vote_count}</td>
+      <td>${b.finalized ? '<span class="tag final">final</span>' : '<span class="tag">pending</span>'}${b.evidence_count ? ' <span class="tag slashed">evidence</span>' : ""}</td>
+    </tr>`).join("");
+  document.querySelectorAll(".blk").forEach(r => r.onclick = () => show("/block/" + r.dataset.h));
+}
+
+function renderEvents(evs) {
+  // Keep only the 3 latest FINAL lines so rarer events (MISSED, CAUGHT, SLASHED) stay visible.
+  const finals = evs.filter(e => e.tag === "FINAL").slice(-3);
+  const list = evs.filter(e => e.tag !== "BLOCK" && (e.tag !== "FINAL" || finals.includes(e))).slice(-60).reverse();
+  if (!list.length) return;
+  $("feed").innerHTML = list.map(e => `
+    <div class="ev"><span class="t">${e.time}</span><span class="k ${e.tag}">${e.tag}</span><span>${esc(e.msg)}</span></div>`).join("");
+}
+
+async function show(path) {
+  try {
+    const d = await get(primary, path, 3000);
+    if (d.txs) d.txs = d.txs.map(t => ({kind: t.kind, from: t.sender.slice(0, 12) + "…", to: t.to, amount: t.amount, fee: t.fee}));
+    if (d.votes) d.votes = d.votes.length + " votes";
+    $("out").textContent = JSON.stringify(d, null, 2);
+  } catch (e) { $("out").textContent = "error: " + e; }
+}
+$("q").addEventListener("keydown", e => {
+  if (e.key !== "Enter") return;
+  const v = e.target.value.trim();
+  show(/^\d+$/.test(v) ? "/block/" + v : "/account/" + v);
+});
+
+function tick() {
+  if (!lastStatus) return;
+  const now = Date.now() / 1000, sec = lastStatus.slot_seconds;
+  const slot = Math.floor((now - lastStatus.genesis_time) / sec);
+  $("slot").textContent = "slot " + slot;
+  $("slotfill").style.width = (((now - lastStatus.genesis_time) % sec) / sec * 100) + "%";
+}
+setInterval(tick, 100);
+poll(); setInterval(() => poll().catch(() => {}), 1000);
+</script>
+</body>
+</html>

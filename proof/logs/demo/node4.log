@@ -1,0 +1,113 @@
+05:56:17 [node4 h=0 f=0] START   validator nyx09d7a010f4569f4f4aece7557e2b527167625998 | p2p 127.0.0.1:7004 | dashboard http://127.0.0.1:8004/
+05:56:17 [node4 h=0 f=0] PEER    connected to 127.0.0.1:7001
+05:56:19 [node4 h=0 f=0] PEER    connected to 127.0.0.1:7002
+05:56:19 [node4 h=0 f=0] PEER    connected to 127.0.0.1:7003
+05:56:22 [node4 h=1 f=0] BLOCK   #1 slot 1 by ME txs=0 votes=0 3ea5d5ab87
+05:56:23 [node4 h=2 f=1] BLOCK   #2 slot 2 by ME txs=0 votes=4 d399871b8f
+05:56:23 [node4 h=2 f=1] FINAL   block #1 finalized (3ea5d5ab87)
+05:56:24 [node4 h=3 f=2] BLOCK   #3 slot 3 by ME txs=0 votes=4 4671cc7a16
+05:56:24 [node4 h=3 f=2] FINAL   block #2 finalized (d399871b8f)
+05:56:25 [node4 h=4 f=3] BLOCK   #4 slot 4 by nyxa74f3c.. txs=0 votes=4 11d97acda5
+05:56:25 [node4 h=4 f=3] FINAL   block #3 finalized (4671cc7a16)
+05:56:26 [node4 h=5 f=4] BLOCK   #5 slot 5 by nyxa74f3c.. txs=0 votes=4 406a0f425b
+05:56:26 [node4 h=5 f=4] FINAL   block #4 finalized (11d97acda5)
+05:56:27 [node4 h=6 f=5] BLOCK   #6 slot 6 by nyx882005.. txs=0 votes=4 3eb7785c56
+05:56:27 [node4 h=6 f=5] FINAL   block #5 finalized (406a0f425b)
+05:56:28 [node4 h=7 f=6] BLOCK   #7 slot 7 by ME txs=0 votes=4 86d0f3b55e
+05:56:28 [node4 h=7 f=6] FINAL   block #6 finalized (3eb7785c56)
+05:56:29 [node4 h=8 f=7] BLOCK   #8 slot 8 by nyxba54f4.. txs=0 votes=4 b865b7984f
+05:56:29 [node4 h=8 f=7] FINAL   block #7 finalized (86d0f3b55e)
+05:56:30 [node4 h=9 f=8] BLOCK   #9 slot 9 by nyxa74f3c.. txs=0 votes=4 4e73e6830b
+05:56:30 [node4 h=9 f=8] FINAL   block #8 finalized (b865b7984f)
+05:56:30 [node4 h=9 f=8] TX      transfer 100 from nyx36dfb1.. nonce=0
+05:56:30 [node4 h=9 f=8] TX      transfer 150 from nyx36dfb1.. nonce=1
+05:56:31 [node4 h=10 f=9] BLOCK   #10 slot 10 by nyx882005.. txs=2 votes=4 e58c5f16c4
+05:56:31 [node4 h=10 f=9] FINAL   block #9 finalized (4e73e6830b)
+05:56:32 [node4 h=11 f=10] BLOCK   #11 slot 11 by nyxba54f4.. txs=0 votes=4 e4b9f5fe3d
+05:56:32 [node4 h=11 f=10] FINAL   block #10 finalized (e58c5f16c4)
+05:56:33 [node4 h=12 f=11] BLOCK   #12 slot 12 by nyxba54f4.. txs=0 votes=4 b9ee267541
+05:56:33 [node4 h=12 f=11] FINAL   block #11 finalized (e4b9f5fe3d)
+05:56:33 [node4 h=12 f=11] TX      stake 300 from nyxd36a50.. nonce=0
+05:56:34 [node4 h=13 f=12] BLOCK   #13 slot 13 by ME txs=1 votes=4 9d31ca277e
+05:56:34 [node4 h=13 f=12] FINAL   block #12 finalized (b9ee267541)
+05:56:35 [node4 h=14 f=13] BLOCK   #14 slot 14 by nyxa74f3c.. txs=0 votes=4 a388b9fcd2
+05:56:35 [node4 h=14 f=13] FINAL   block #13 finalized (9d31ca277e)
+05:56:36 [node4 h=15 f=14] BLOCK   #15 slot 15 by ME txs=0 votes=4 ed47fdb7fe
+05:56:36 [node4 h=15 f=14] FINAL   block #14 finalized (a388b9fcd2)
+05:56:37 [node4 h=16 f=15] BLOCK   #16 slot 16 by nyxa74f3c.. txs=0 votes=4 e9a72c8e4e
+05:56:37 [node4 h=16 f=15] FINAL   block #15 finalized (ed47fdb7fe)
+05:56:37 [node4 h=16 f=15] TX      unstake 100 from nyxd36a50.. nonce=1
+05:56:38 [node4 h=17 f=16] BLOCK   #17 slot 17 by nyxa74f3c.. txs=1 votes=4 9eafa2dab7
+05:56:38 [node4 h=17 f=16] FINAL   block #16 finalized (e9a72c8e4e)
+05:56:38 [node4 h=17 f=16] PEER    lost node3 (127.0.0.1:7003)
+05:56:39 [node4 h=18 f=17] BLOCK   #18 slot 18 by nyxba54f4.. txs=0 votes=4 2f21a0ee01
+05:56:39 [node4 h=18 f=17] FINAL   block #17 finalized (9eafa2dab7)
+05:56:40 [node4 h=19 f=18] BLOCK   #19 slot 19 by nyxa74f3c.. txs=0 votes=3 d147b63ae9
+05:56:40 [node4 h=19 f=18] FINAL   block #18 finalized (2f21a0ee01)
+05:56:41 [node4 h=20 f=19] BLOCK   #20 slot 20 by nyxa74f3c.. txs=0 votes=3 0ab3395c19
+05:56:41 [node4 h=20 f=19] FINAL   block #19 finalized (d147b63ae9)
+05:56:43 [node4 h=21 f=20] BLOCK   #21 slot 22 by ME txs=0 votes=3 80c8996300
+05:56:43 [node4 h=21 f=20] MISSED  slot 21 skipped by nyx882005.. -> reputation 57%
+05:56:43 [node4 h=21 f=20] FINAL   block #20 finalized (0ab3395c19)
+05:56:44 [node4 h=22 f=21] BLOCK   #22 slot 23 by ME txs=0 votes=3 02c1bfe5b9
+05:56:44 [node4 h=22 f=21] FINAL   block #21 finalized (80c8996300)
+05:56:45 [node4 h=23 f=22] BLOCK   #23 slot 24 by ME txs=0 votes=3 9984025fa4
+05:56:45 [node4 h=23 f=22] FINAL   block #22 finalized (02c1bfe5b9)
+05:56:46 [node4 h=24 f=23] BLOCK   #24 slot 25 by ME txs=0 votes=3 2b4b0eb748
+05:56:46 [node4 h=24 f=23] FINAL   block #23 finalized (9984025fa4)
+05:56:47 [node4 h=25 f=24] BLOCK   #25 slot 26 by nyxba54f4.. txs=0 votes=3 49d19b5e7d
+05:56:47 [node4 h=25 f=24] FINAL   block #24 finalized (2b4b0eb748)
+05:56:48 [node4 h=26 f=25] BLOCK   #26 slot 27 by ME txs=0 votes=3 0bbe7f1bed
+05:56:48 [node4 h=26 f=25] FINAL   block #25 finalized (49d19b5e7d)
+05:56:49 [node4 h=27 f=26] BLOCK   #27 slot 28 by ME txs=0 votes=3 17428abe2f
+05:56:49 [node4 h=27 f=26] FINAL   block #26 finalized (0bbe7f1bed)
+05:56:50 [node4 h=28 f=27] BLOCK   #28 slot 29 by nyxa74f3c.. txs=0 votes=3 cb21685bf7
+05:56:50 [node4 h=28 f=27] FINAL   block #27 finalized (17428abe2f)
+05:56:52 [node4 h=29 f=28] BLOCK   #29 slot 31 by nyxba54f4.. txs=0 votes=3 c40015040c
+05:56:52 [node4 h=29 f=28] MISSED  slot 30 skipped by nyx882005.. -> reputation 47%
+05:56:52 [node4 h=29 f=28] FINAL   block #28 finalized (cb21685bf7)
+05:56:53 [node4 h=30 f=29] BLOCK   #30 slot 32 by nyxba54f4.. txs=0 votes=3 13f8d0133b
+05:56:53 [node4 h=30 f=29] FINAL   block #29 finalized (c40015040c)
+05:56:54 [node4 h=31 f=30] BLOCK   #31 slot 33 by nyxa74f3c.. txs=0 votes=3 adb606180e
+05:56:54 [node4 h=31 f=30] FINAL   block #30 finalized (13f8d0133b)
+05:56:55 [node4 h=32 f=31] BLOCK   #32 slot 34 by nyxba54f4.. txs=0 votes=3 f47adc8512
+05:56:55 [node4 h=32 f=31] FINAL   block #31 finalized (adb606180e)
+05:56:56 [node4 h=33 f=32] BLOCK   #33 slot 35 by nyxa74f3c.. txs=0 votes=3 e615fe94d2
+05:56:56 [node4 h=33 f=32] FINAL   block #32 finalized (f47adc8512)
+05:56:57 [node4 h=34 f=33] BLOCK   #34 slot 36 by ME txs=0 votes=3 7d8655ec92
+05:56:57 [node4 h=34 f=33] FINAL   block #33 finalized (e615fe94d2)
+05:56:58 [node4 h=35 f=34] BLOCK   #35 slot 37 by nyxa74f3c.. txs=0 votes=3 4f5e8031a5
+05:56:58 [node4 h=35 f=34] FINAL   block #34 finalized (7d8655ec92)
+05:56:59 [node4 h=36 f=35] BLOCK   #36 slot 38 by nyxa74f3c.. txs=0 votes=3 4b3b2205f8
+05:56:59 [node4 h=36 f=35] FINAL   block #35 finalized (4f5e8031a5)
+05:57:00 [node4 h=37 f=36] BLOCK   #37 slot 39 by ME txs=0 votes=6 c76b4015e0
+05:57:00 [node4 h=37 f=36] FINAL   block #36 finalized (4b3b2205f8)
+05:57:01 [node4 h=37 f=36] PEER    connected to 127.0.0.1:7003
+05:57:01 [node4 h=38 f=37] BLOCK   #38 slot 40 by nyxba54f4.. txs=0 votes=4 06a35ec5d4
+05:57:01 [node4 h=38 f=37] FINAL   block #37 finalized (c76b4015e0)
+05:57:02 [node4 h=39 f=38] BLOCK   #39 slot 41 by nyx882005.. txs=0 votes=4 7e3832bfc3
+05:57:02 [node4 h=39 f=38] FINAL   block #38 finalized (06a35ec5d4)
+05:57:03 [node4 h=39 f=38] TX      stake 9000 from nyx36dfb1.. nonce=2
+05:57:03 [node4 h=40 f=39] BLOCK   #40 slot 42 by ME txs=1 votes=4 fb419a1e44
+05:57:03 [node4 h=40 f=39] FINAL   block #39 finalized (7e3832bfc3)
+05:57:04 [node4 h=41 f=40] BLOCK   #41 slot 43 by ME txs=0 votes=4 a8abaebd05
+05:57:04 [node4 h=41 f=40] FINAL   block #40 finalized (fb419a1e44)
+05:57:05 [node4 h=42 f=41] BLOCK   #42 slot 44 by ME txs=0 votes=4 b2f4f2cf05
+05:57:05 [node4 h=42 f=41] FINAL   block #41 finalized (a8abaebd05)
+05:57:09 [node4 h=43 f=42] BLOCK   #43 slot 48 by nyxa74f3c.. txs=0 votes=4 fb0d6dfb33
+05:57:09 [node4 h=43 f=42] MISSED  slot 45 skipped by nyx36dfb1.. -> reputation 8%
+05:57:09 [node4 h=43 f=42] MISSED  slot 46 skipped by nyx36dfb1.. -> reputation 8%
+05:57:09 [node4 h=43 f=42] MISSED  slot 47 skipped by nyx36dfb1.. -> reputation 8%
+05:57:09 [node4 h=43 f=42] FINAL   block #42 finalized (b2f4f2cf05)
+05:57:10 [node4 h=44 f=43] BLOCK   #44 slot 49 by nyxa74f3c.. txs=0 votes=4 24dd063055
+05:57:10 [node4 h=44 f=43] FINAL   block #43 finalized (fb0d6dfb33)
+05:57:11 [node4 h=45 f=44] BLOCK   #45 slot 50 by nyxa74f3c.. txs=0 votes=4 d673c8cadb
+05:57:11 [node4 h=45 f=44] FINAL   block #44 finalized (24dd063055)
+05:57:12 [node4 h=46 f=45] BLOCK   #46 slot 51 by ME txs=0 votes=4 70212ae6ff
+05:57:12 [node4 h=46 f=45] FINAL   block #45 finalized (d673c8cadb)
+05:57:13 [node4 h=47 f=46] BLOCK   #47 slot 52 by ME txs=0 votes=4 5c7d02a81e
+05:57:13 [node4 h=47 f=46] FINAL   block #46 finalized (70212ae6ff)
+05:57:16 [node4 h=48 f=47] BLOCK   #48 slot 55 by nyxba54f4.. txs=0 votes=4 d986b27667
+05:57:16 [node4 h=48 f=47] MISSED  slot 53 skipped by nyx36dfb1.. -> reputation 6%
+05:57:16 [node4 h=48 f=47] MISSED  slot 54 skipped by nyx36dfb1.. -> reputation 6%
+05:57:16 [node4 h=48 f=47] FINAL   block #47 finalized (5c7d02a81e)

@@ -1,0 +1,176 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black]{hyperref}
+
+\setlist{itemsep=2pt,topsep=4pt}
+\renewcommand{\arraystretch}{1.25}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\title{\textbf{NyxChain: A Custom Layer-1 Blockchain with Hybrid Reputation-Weighted Consensus}\\[4pt]
+\large Literature Survey}
+\author{Mukkara Rithvik Reddy \\ % add teammate names here
+Department of Computer Science and Engineering \\
+Amrita Vishwa Vidyapeetham, Bengaluru}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+NyxChain is a from-scratch Layer-1 blockchain with its own block structure, peer-to-peer layer, transaction pool, wallet, and a consensus protocol that mixes economic stake with earned reputation. This survey reviews sixteen works that bear directly on that design: the foundations of Byzantine agreement, proof-of-work and its known weaknesses, provably secure proof-of-stake, BFT-style finality, reputation-based consensus, fork-choice rules, and peer-to-peer networking. For each theme we state what the literature establishes, then identify the gap that motivates a hybrid stake-and-reputation protocol with an explicit finality rule.
+\end{abstract}
+
+\section{Introduction}
+Designing a blockchain from scratch forces four decisions that an application built on an existing chain never has to make: how nodes find and talk to each other, how a single canonical history is chosen when forks appear, who is allowed to propose and vote on blocks (and what stops one party from pretending to be many), and when a block becomes irreversible. The literature below is organised around exactly those decisions.
+
+The survey is structured as follows. Section~\ref{sec:foundations} covers classical agreement theory. Section~\ref{sec:pow} covers Nakamoto consensus and its analysis. Section~\ref{sec:forks} covers fork-choice rules. Section~\ref{sec:pos} covers proof-of-stake. Section~\ref{sec:bft} covers BFT protocols and finality. Section~\ref{sec:rep} covers reputation-based consensus, the closest prior work to NyxChain. Section~\ref{sec:p2p} covers peer-to-peer networking. Section~\ref{sec:compare} compares all works, and Section~\ref{sec:gap} states the research gap and how NyxChain addresses it.
+
+\section{Foundations of Agreement}\label{sec:foundations}
+
+\textbf{Byzantine Generals.} Lamport, Shostak and Pease formalised the problem of reaching agreement when some participants may behave arbitrarily, and showed that with unsigned messages agreement requires more than two thirds of participants to be honest \cite{lamport1982}. This $n \ge 3f+1$ bound is the root of every fault-tolerance threshold used by later blockchain protocols, including the voting quorums in NyxChain.
+
+\textbf{PBFT.} Castro and Liskov gave the first practical Byzantine fault-tolerant replication protocol for a partially synchronous network, using a leader with a three-phase message exchange and a view-change procedure to replace faulty leaders \cite{castro1999}. Its weakness for blockchains is communication cost: view changes are expensive and the participant set is fixed and known in advance.
+
+\textbf{Raft.} Ongaro and Ousterhout designed Raft for crash faults only, splitting consensus into leader election (using randomised timeouts), log replication and safety \cite{ongaro2014}. Raft does not tolerate malicious nodes and is therefore unsuitable as a blockchain consensus rule, but its leader-timeout mechanism is a clean model for how a NyxChain validator network can detect a dead proposer and move on, which is exactly the ``kill a node and watch the network self-heal'' behaviour planned for the demo.
+
+\section{Proof of Work and Its Analysis}\label{sec:pow}
+
+\textbf{Bitcoin.} Nakamoto introduced a ledger secured by proof-of-work, where participants extend the longest chain of blocks and are rewarded for doing so \cite{nakamoto2008}. This removed the need for a known participant list, but at the price of probabilistic finality and large energy expenditure.
+
+\textbf{The Bitcoin backbone.} Garay, Kiayias and Leonardos extracted the core of Bitcoin into an abstract protocol and proved two properties, \emph{common prefix} (honest nodes' chains agree except for a short suffix) and \emph{chain quality} (honest nodes contribute a guaranteed share of blocks), under an honest-majority assumption on hashing power \cite{garay2015}. These two properties give NyxChain a concrete vocabulary for what ``secure'' means and a checklist of properties the custom consensus should be argued to satisfy.
+
+\textbf{Selfish mining.} Eyal and Sirer showed that Bitcoin's mining protocol is not incentive-compatible: a colluding group can earn more than its fair share by withholding blocks, and rational miners are then drawn into that group \cite{eyal2014}. They propose a modification that tolerates such pools below one quarter of resources. The lesson for NyxChain is that honest-majority arguments are not enough on their own; the reward and penalty rules must make honest behaviour the best strategy.
+
+\section{Fork Choice}\label{sec:forks}
+
+\textbf{GHOST.} Sompolinsky and Zohar observed that at high block rates the longest-chain rule lets weaker attackers reverse payments, and proposed the GHOST rule, which selects the heaviest subtree of blocks rather than the longest path, so that work in competing branches still counts \cite{sompolinsky2015}. \textbf{PHANTOM and GHOSTDAG.} The same group later generalised the chain into a directed acyclic graph of blocks to raise throughput while keeping security \cite{sompolinsky2018}. Both works show that the fork-choice rule is a design variable with real security consequences. For NyxChain, the analogue is a stake-and-reputation-weighted fork choice, where the ``weight'' of a branch is the total voting power that has attested to it.
+
+\section{Proof of Stake}\label{sec:pos}
+
+\textbf{Ouroboros.} Kiayias, Russell, David and Oliynykov presented the first proof-of-stake blockchain protocol with rigorous security guarantees comparable to Bitcoin's, based on epochs and slot leaders chosen using a secure multiparty coin-tossing procedure \cite{kiayias2017}. They also give a reward mechanism for which honest behaviour is an approximate Nash equilibrium, which directly addresses the selfish-mining concern above.
+
+\textbf{Ouroboros Praos.} David, Gaži, Kiayias and Russell extended this to a semi-synchronous network and fully adaptive corruption, using forward-secure signatures and a verifiable random function so that slot leaders stay private until they publish a block \cite{david2018}.
+
+\textbf{Algorand.} Gilad, Hemo, Micali, Vlachos and Zeldovich combine a new Byzantine agreement protocol with verifiable-random-function-based sortition, so that a small, secretly chosen committee agrees on each block \cite{gilad2017}. Transactions are confirmed in under a minute and the system avoids ordinary forks. Committee members are replaced immediately after they speak, which blunts targeted attacks.
+
+These three works establish that stake can replace work as the Sybil-resistance mechanism, and that leader selection can be made unpredictable. What stake alone does not address is that wealth is a poor proxy for trustworthiness: a newly bought large stake carries full voting power on day one.
+
+\section{BFT-Style Finality}\label{sec:bft}
+
+\textbf{Casper FFG.} Buterin and Griffith introduced Casper as a proof-of-stake \emph{finality gadget} that overlays an existing block-proposal mechanism \cite{buterin2017}. Validators vote on checkpoints, and slashing conditions penalise validators who sign conflicting votes, so safety (no two conflicting finalised checkpoints) is protected even if the proposal layer is attacked, while liveness depends on the proposal mechanism.
+
+\textbf{HotStuff.} Yin, Malkhi, Reiter, Gueta and Abraham presented a leader-based BFT protocol for partial synchrony that is \emph{responsive} (progress at the speed of the actual network, not the worst-case delay) and has linear communication during leader replacement \cite{yin2019}. Its chained, pipelined structure and its framing of BFT replication as growing a graph of blocks make it a natural template for a NyxChain finality layer that is simple enough to implement and demonstrate.
+
+Together, these show that finality can be separated from block production: blocks are proposed optimistically and a quorum vote later makes a prefix irreversible.
+
+\section{Reputation-Based Consensus}\label{sec:rep}
+
+\textbf{RepuCoin.} Yu, Kozhaya, Decouchant and Esteves-Verissimo define a miner's voting power by its \emph{reputation}, a function of its work integrated over the whole history of the chain rather than its instantaneous computing power \cite{yu2019}. Because reputation can only accumulate over time, an attacker who briefly rents a majority of hash power still cannot control voting; misbehaviour lowers reputation. The authors report tolerance of a temporary majority attacker and throughput of about ten thousand transactions per second in their evaluation. RepuCoin builds reputation on top of proof-of-work, and runs consensus within a group of miners chosen by reputation.
+
+\textbf{Proof-of-Reputation.} Aluko and Kolonin propose a consensus mechanism in which the nodes with the highest reputation values form the consensus group that decides the state of the chain \cite{aluko2021}. This is a reputation-only design, without an economic stake component and without a formal finality rule.
+
+These are the closest prior works to NyxChain, and they establish the central insight: voting power that is earned over time is far harder to buy or rent than power measured at a single instant.
+
+\section{Peer-to-Peer Networking}\label{sec:p2p}
+
+\textbf{Kademlia.} Maymounkov and Mazières describe a peer-to-peer distributed hash table that uses an XOR distance metric, so that every message a node receives also teaches it about useful contacts, and parallel asynchronous queries tolerate node failures without waiting for timeouts \cite{maymounkov2002}. Kademlia is widely reused for node discovery. For NyxChain, it provides a ready-made, failure-tolerant way for new nodes to find peers before blocks and transactions are gossiped between them.
+
+\section{Comparative Summary}\label{sec:compare}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabularx}{\textwidth}{@{}p{2.6cm}p{2.2cm}YY@{}}
+\toprule
+\textbf{Work} & \textbf{Family} & \textbf{Sybil resistance / voting power} & \textbf{Relevance to NyxChain} \\
+\midrule
+Lamport et al.\ \cite{lamport1982} & Agreement theory & Fraction of honest parties & Fault-tolerance thresholds \\
+PBFT \cite{castro1999} & BFT & Fixed known replicas & Three-phase voting, view change \\
+Raft \cite{ongaro2014} & Crash-fault & Fixed known servers & Leader timeout and re-election \\
+Bitcoin \cite{nakamoto2008} & PoW & Hash power & Baseline longest-chain design \\
+Backbone \cite{garay2015} & PoW analysis & Hash power & Common prefix, chain quality \\
+Selfish mining \cite{eyal2014} & PoW attack & Hash power & Need for incentive-compatible rewards \\
+GHOST \cite{sompolinsky2015} & Fork choice & Hash power & Weighted fork-choice rule \\
+GHOSTDAG \cite{sompolinsky2018} & Fork choice (DAG) & Hash power & Throughput versus security trade-off \\
+Ouroboros \cite{kiayias2017} & PoS & Stake & Epoch and slot-leader structure \\
+Praos \cite{david2018} & PoS & Stake & Private leader election (VRF) \\
+Algorand \cite{gilad2017} & PoS + BA & Stake (sortition) & Committee voting, no forks \\
+Casper FFG \cite{buterin2017} & Finality gadget & Stake, with slashing & Separate finality layer \\
+HotStuff \cite{yin2019} & BFT & Fixed known replicas & Pipelined voting, linear view change \\
+RepuCoin \cite{yu2019} & PoW + reputation & Reputation over time & Time-integrated voting power \\
+Proof-of-Reputation \cite{aluko2021} & Reputation & Reputation ranking & Reputation-selected consensus group \\
+Kademlia \cite{maymounkov2002} & P2P overlay & Not applicable & Peer discovery and routing \\
+\bottomrule
+\end{tabularx}
+\caption{Surveyed works and their relevance to NyxChain.}
+\end{table}
+
+\section{Research Gap and Positioning of NyxChain}\label{sec:gap}
+
+From the survey, three observations stand out.
+
+\begin{enumerate}
+\item \textbf{Stake alone buys influence instantly.} Proof-of-stake protocols with strong proofs \cite{kiayias2017,david2018,gilad2017} give voting power in proportion to holdings, so influence can be purchased at once.
+\item \textbf{Reputation alone lacks an economic penalty.} Reputation-based designs \cite{yu2019,aluko2021} make influence slow to acquire, but RepuCoin depends on proof-of-work and Proof-of-Reputation has no stake to lose.
+\item \textbf{Few designs combine these with an explicit finality layer.} Finality gadgets and pipelined BFT \cite{buterin2017,yin2019} provide irreversibility but take validator weight as given, rather than as something earned.
+\end{enumerate}
+
+NyxChain is positioned in the intersection. Its planned contributions are:
+
+\begin{itemize}
+\item a validator weight that combines \emph{stake} (something at risk) with \emph{reputation} (something earned and lost through observed behaviour), so neither a rich newcomer nor an old but unstaked node can dominate;
+\item a fork-choice rule weighted by this combined power, in the spirit of \cite{sompolinsky2015};
+\item a quorum-vote finality rule inspired by \cite{buterin2017,yin2019}, with penalties for equivocation;
+\item a leader-timeout recovery mechanism in the style of \cite{ongaro2014}, adapted to tolerate malicious rather than merely crashed nodes;
+\item peer discovery based on a Kademlia-style overlay \cite{maymounkov2002}, plus a wallet layer for key generation, transaction signing and balance tracking.
+\end{itemize}
+
+\paragraph{Open research questions.} (i) How should reputation be earned and decayed so that it cannot be farmed cheaply? (ii) What weighting between stake and reputation preserves the honest-majority assumption needed for common prefix and chain quality \cite{garay2015}? (iii) Does a combined weight remain incentive-compatible against withholding strategies like those in \cite{eyal2014}?
+
+\paragraph{Scope note.} To keep the project buildable, the first milestone is a working proof-of-stake chain with networking and wallet; reputation weighting and the finality rule are layered on afterwards and evaluated with a multi-node demonstration that includes node failure.
+
+\begin{thebibliography}{99}\small
+
+\bibitem{lamport1982} L.~Lamport, R.~Shostak, and M.~Pease. The Byzantine Generals Problem. \emph{ACM Transactions on Programming Languages and Systems}, 4(3):382--401, 1982.
+
+\bibitem{castro1999} M.~Castro and B.~Liskov. Practical Byzantine Fault Tolerance. In \emph{Proc.\ 3rd USENIX Symposium on Operating Systems Design and Implementation (OSDI)}, 1999.
+
+\bibitem{ongaro2014} D.~Ongaro and J.~Ousterhout. In Search of an Understandable Consensus Algorithm. In \emph{Proc.\ USENIX Annual Technical Conference (ATC)}, pp.\ 305--319, 2014.
+
+\bibitem{nakamoto2008} S.~Nakamoto. Bitcoin: A Peer-to-Peer Electronic Cash System. 2008. \url{https://bitcoin.org/bitcoin.pdf}
+
+\bibitem{garay2015} J.~Garay, A.~Kiayias, and N.~Leonardos. The Bitcoin Backbone Protocol: Analysis and Applications. In \emph{EUROCRYPT 2015}, 2015. Extended version: Cryptology ePrint Archive, Paper 2014/765.
+
+\bibitem{eyal2014} I.~Eyal and E.~G.~Sirer. Majority is not Enough: Bitcoin Mining is Vulnerable. In \emph{Financial Cryptography and Data Security (FC)}, 2014. arXiv:1311.0243.
+
+\bibitem{sompolinsky2015} Y.~Sompolinsky and A.~Zohar. Secure High-Rate Transaction Processing in Bitcoin. In \emph{Financial Cryptography and Data Security (FC 2015)}, Springer, pp.\ 507--527, 2015.
+
+\bibitem{sompolinsky2018} Y.~Sompolinsky, S.~Wyborski, and A.~Zohar. PHANTOM and GHOSTDAG: A Scalable Generalization of Nakamoto Consensus. Cryptology ePrint Archive, Paper 2018/104, 2018.
+
+\bibitem{kiayias2017} A.~Kiayias, A.~Russell, B.~David, and R.~Oliynykov. Ouroboros: A Provably Secure Proof-of-Stake Blockchain Protocol. In \emph{CRYPTO 2017}, 2017. Cryptology ePrint Archive, Paper 2016/889.
+
+\bibitem{david2018} B.~David, P.~Ga\v{z}i, A.~Kiayias, and A.~Russell. Ouroboros Praos: An Adaptively-Secure, Semi-Synchronous Proof-of-Stake Protocol. Cryptology ePrint Archive, Paper 2017/573 (published at EUROCRYPT 2018).
+
+\bibitem{gilad2017} Y.~Gilad, R.~Hemo, S.~Micali, G.~Vlachos, and N.~Zeldovich. Algorand: Scaling Byzantine Agreements for Cryptocurrencies. In \emph{Proc.\ 26th ACM Symposium on Operating Systems Principles (SOSP)}, Shanghai, 2017.
+
+\bibitem{buterin2017} V.~Buterin and V.~Griffith. Casper the Friendly Finality Gadget. arXiv:1710.09437, 2017.
+
+\bibitem{yin2019} M.~Yin, D.~Malkhi, M.~K.~Reiter, G.~Golan~Gueta, and I.~Abraham. HotStuff: BFT Consensus in the Lens of Blockchain. In \emph{Proc.\ ACM Symposium on Principles of Distributed Computing (PODC)}, 2019. arXiv:1803.05069.
+
+\bibitem{yu2019} J.~Yu, D.~Kozhaya, J.~Decouchant, and P.~Esteves-Verissimo. RepuCoin: Your Reputation is Your Power. \emph{IEEE Transactions on Computers}, 2019. Cryptology ePrint Archive, Paper 2018/239.
+
+\bibitem{aluko2021} O.~Aluko and A.~Kolonin. Proof-of-Reputation: An Alternative Consensus Mechanism for Blockchain Systems. arXiv:2108.03542, 2021.
+
+\bibitem{maymounkov2002} P.~Maymounkov and D.~Mazi\`eres. Kademlia: A Peer-to-Peer Information System Based on the XOR Metric. In \emph{Proc.\ 1st International Workshop on Peer-to-Peer Systems (IPTPS)}, pp.\ 53--65, 2002.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,81 @@
+NyxChain end-to-end demo -- 2026-11-23 05:56 UTC
+
+== 1. Generate testnet and start 4 validators ========================
+   data and logs: /tmp/nyx-demo-5powv0fx
+
+== 2. Peer discovery, block production and finality ==================
+   node    height  final  tip          peers
+   node1        7      6  86d0f3b55e       3
+   node2        7      6  86d0f3b55e       3
+   node3        7      6  86d0f3b55e       3
+   node4        7      6  86d0f3b55e       3
+   [PASS] every node found all 3 peers (from a single seed)
+   [PASS] blocks are being produced  (min height 7)
+   [PASS] blocks are being finalized by 2/3 votes  (finalized height 6, tip 7)
+   (screenshot saved: 01_network_running.png)
+
+== 3. Wallet: Alice pays Bob, Bob stakes, then unstakes part =========
+   alice -> bob: 100 NYX, 150 NYX (submitted to node1)
+   bob stakes 300 NYX (submitted to node2)
+   bob as seen by node1..4: balance [949, 949, 949, 949], stake [300, 300, 300, 300]
+   [PASS] all nodes agree on bob's account
+   [PASS] bob received 250 and staked 300
+   [PASS] new validator joins at low reputation (10%, then it must earn it)  (10.0% vs 50%+ for genesis validators)
+   bob unstakes 100 NYX (submitted to node3)
+   [PASS] unstaked coins are locked while unbonding, not returned at once  (unbonding [[27, 100]], balance 948)
+
+== 4. Kill node3 (hard crash) ========================================
+   validator        stake  reputation  weight
+   nyx09d7a010f       500         62%     311
+   nyx8820052ab       500         60%     300
+   nyxa74f3c88c       500         62%     311
+   nyxba54f4579       500         61%     303
+   nyxd36a508e9       200         10%      19
+   node3 killed; waiting 20 slots...
+   node    height  final  tip          peers
+   node1       35     34  4f5e8031a5       2
+   node2       35     34  4f5e8031a5       2
+   node3     (offline)
+   node4       35     34  4f5e8031a5       2
+   validator        stake  reputation  weight
+   nyx09d7a010f       500         73%     367
+   nyx8820052ab       500         43%     217
+   nyxa74f3c88c       500         73%     365
+   nyxba54f4579       500         71%     357
+   nyxd36a508e9       200          8%      15
+   [PASS] chain kept growing without node3  (+18 blocks in 20 slots)
+   [PASS] finality kept advancing without node3  (finalized 16 -> 34)
+   [PASS] node3's reputation fell  (60% -> 43%)
+   [PASS] surviving nodes agree on the tip
+   (screenshot saved: 02_node3_down.png)
+
+== 5. Restart node3 ==================================================
+   node    height  final  tip          peers
+   node1       38     37  06a35ec5d4       3
+   node2       38     37  06a35ec5d4       3
+   node3       38     37  06a35ec5d4       3
+   node4       38     37  06a35ec5d4       3
+   [PASS] node3 caught up with the network  (heights [38, 38, 38, 38])
+   [PASS] node3 restored blocks from disk
+   (screenshot saved: 03_node3_recovered.png)
+
+== 6. Reputation is recent reliability, not accumulated history ======
+   running validators (node1, node2, node4): [75, 73, 75]%
+   node3 (back after crash): 46%   bob (staked, never ran a node): 7%
+   [PASS] validators doing the same work have near-equal reputation  (spread 1.8 points)
+   [PASS] a staker that never runs a node loses reputation  (bob 10% -> 7%)
+
+== 7. Whale: Alice stakes 9,000 NYX (18x a normal validator) and stays offline 
+   alice raw weight 900 = 40% of raw total; capped weight 587 = 29.99%
+   [PASS] the whale's voting share is capped at 30%  (40% uncapped -> 29.99%)
+   offline weight (alice + bob): 40% without the cap (above 1/3: finality would stall), 31% with it
+   [PASS] finality keeps advancing although the whale never votes  (finalized 39 -> 46)
+   (screenshot saved: 04_whale_capped.png)
+
+== 8. Unbonding release and agreement on finalized history ===========
+   [PASS] unbonded coins were released after the unbonding period  (balance now 1048)
+   [PASS] all 4 nodes have the identical finalized block  (block #47 on every node)
+   [PASS] no honest block was ever rejected  (0 rejections in logs)
+
+== Summary ===========================================================
+   20/20 checks passed
